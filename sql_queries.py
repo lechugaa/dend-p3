@@ -58,7 +58,7 @@ staging_songs_table_create = ("""
 songplay_table_create = ("""
     CREATE TABLE IF NOT EXISTS songplays (
         songplay_id int IDENTITY(0, 1) PRIMARY KEY,
-        start_time bigint NOT NULL,
+        start_time timestamp NOT NULL,
         user_id int,
         level varchar NOT NULL,
         song_id varchar,
@@ -101,7 +101,7 @@ artist_table_create = ("""
 
 time_table_create = ("""
     CREATE TABLE IF NOT EXISTS time (
-        start_time bigint NOT NULL,
+        start_time timestamp NOT NULL,
         hour smallint NOT NULL,
         day smallint NOT NULL,
         week smallint NOT NULL,
@@ -117,7 +117,8 @@ staging_events_copy = ("""
     COPY staging_events FROM '{}'
     CREDENTIALS 'aws_iam_role={}'
     REGION 'us-west-2'
-    JSON '{}';
+    JSON '{}'
+    TIMEFORMAT as 'epochmillisecs';
 """).format(config.get('S3', 'LOG_DATA'), config.get('IAM_ROLE', 'ARN'), config.get('S3', 'LOG_JSONPATH'))
 
 staging_songs_copy = ("""
@@ -144,19 +145,20 @@ songplay_table_insert = ("""
             ON staging_events.artist = staging_songs.artist_name 
             AND staging_events.song = staging_songs.song_id
             AND staging_events.length = staging_songs.duration
-        WHERE staging_evetns.page = 'NextSong'
+        WHERE staging_events.page = 'NextSong'
     );
 """)
 
 user_table_insert = ("""
     INSERT INTO users (user_id, first_name, last_name, gender, level)
-    SELECT DISTINCT userId,
+    SELECT DISTINCT userId
                   , firstName
                   , lastName
                   , gender
                   , level
-    FROM staging_events_table_create
-    WHERE userId IS NOT NULL;
+    FROM staging_events
+    WHERE userId IS NOT NULL
+    AND staging_events.page = 'NextSong';
 """)
 
 song_table_insert = ("""
@@ -188,7 +190,8 @@ time_table_insert = ("""
          , EXTRACT(MONTH FROM ts)
          , EXTRACT(YEAR FROM ts)
          , EXTRACT(WEEKDAY FROM ts)
-    FROM staging_events;
+    FROM staging_events
+    WHERE staging_events.page = 'NextSong';
 """)
 
 # QUERY LISTS
