@@ -4,18 +4,34 @@ from sql_queries import create_table_queries, drop_table_queries
 
 
 def drop_tables(cur, conn):
+    """
+    Drops the staging and DWH tables if they exist
+    :param cur: psycopg2 cursor
+    :param conn: psycopg2 connection
+    :return: None
+    """
     for query in drop_table_queries:
         cur.execute(query)
         conn.commit()
 
 
 def create_tables(cur, conn):
+    """
+    Creates the staging tables and star schema in DWH
+    :param cur: psycopg2 cursor
+    :param conn: psycopg2 connection
+    :return: None
+    """
     for query in create_table_queries:
         cur.execute(query)
         conn.commit()
 
 
 def main():
+    """
+    Drops DWH tables if they exist and creates staging tables and star schema
+    :return: None
+    """
     config = configparser.ConfigParser()
     config.read('dwh.cfg')
 
