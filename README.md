@@ -70,9 +70,9 @@ LOG_JSONPATH=s3://udacity-dend/log_json_path.json
 SONG_DATA=s3://udacity-dend/song_data/A/A/C
 ```
 
-### Execution
+## Execution
 
-In order to create the databases clone this repo and once you have fullfilled the requirements detailed above run the following commands:
+In order to create the DWH clone this repo and once you have fulfilled the requirements detailed above run the following commands:
 
 ```
 python create_tables.py
