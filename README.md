@@ -2,6 +2,8 @@
 
 This project is part of Udacity's **Data Engineering Nanodegree**. 
 
+---
+
 ## Description
 
 This project is an ETL pipeline using Python that helps a fake startup called Sparkify generate the databases required 
