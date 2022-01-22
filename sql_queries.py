@@ -18,21 +18,21 @@ time_table_drop = "DROP TABLE IF EXISTS time;"
 staging_events_table_create = ("""
     CREATE TABLE IF NOT EXISTS staging_events (
         artist varchar,
-        auth varchar NOT NULL,
+        auth varchar,
         firstName varchar,
         gender varchar(1),
-        itemInSession int NOT NULL,
+        itemInSession int,
         lastName varchar,
         length real,
-        level varchar NOT NULL,
+        level varchar,
         location varchar,
-        method varchar NOT NULL,
-        page varchar NOT NULL,
+        method varchar,
+        page varchar,
         registration real,
-        sessionId integer NOT NULL,
+        sessionId integer,
         song varchar,
-        status smallint NOT NULL,
-        ts timestamp NOT NULL,
+        status smallint,
+        ts timestamp,
         userAgent varchar,
         userId int
     );
@@ -40,16 +40,16 @@ staging_events_table_create = ("""
 
 staging_songs_table_create = ("""
     CREATE TABLE IF NOT EXISTS staging_songs (
-        num_songs int NOT NULL, 
-        artist_id varchar NOT NULL, 
+        num_songs int, 
+        artist_id varchar, 
         artist_latitude real, 
         artist_longitude real, 
-        artist_location varchar NOT NULL, 
-        artist_name varchar NOT NULL, 
-        song_id varchar NOT NULL, 
-        title varchar NOT NULL, 
-        duration real NOT NULL, 
-        year smallint NOT NULL
+        artist_location varchar, 
+        artist_name varchar, 
+        song_id varchar, 
+        title varchar, 
+        duration real, 
+        year smallint
     );
 """)
 
@@ -99,7 +99,7 @@ artist_table_create = ("""
 
 time_table_create = ("""
     CREATE TABLE IF NOT EXISTS time (
-        start_time timestamp NOT NULL,
+        start_time timestamp PRIMARY KEY,
         hour smallint NOT NULL,
         day smallint NOT NULL,
         week smallint NOT NULL,
@@ -139,7 +139,7 @@ songplay_table_insert = ("""
         FROM staging_events
         JOIN staging_songs 
             ON staging_events.artist = staging_songs.artist_name 
-            AND staging_events.song = staging_songs.song_id
+            AND staging_events.song = staging_songs.title
             AND staging_events.length = staging_songs.duration
         WHERE staging_events.page = 'NextSong'
     );
